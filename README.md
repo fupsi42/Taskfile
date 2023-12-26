@@ -2,4 +2,4 @@
 
 some Tasks need variables which should be defined. 
 
-See .env.example
+See .taskfile.env.example
