@@ -4,11 +4,18 @@ tasks:
     desc: spin up the hugo development server.
     dir: '{{.USER_WORKING_DIR}}'
     cmds:
-      - hugo server -D -E -F --cleanDestinationDir --gc --enableGitInfo --ignoreCache --minify --navigateToChanged --noHTTPCache --templateMetrics --disableFastRender --port 8080
+      - hugo server -D -E -F --cleanDestinationDir --gc --enableGitInfo --ignoreCache --minify --navigateToChanged --noHTTPCache --templateMetrics --disableFastRender --bind=0.0.0.0 --port 8080
 
-  publish:
+  publish_scp:
     desc: pushes the site
     dir: '{{.USER_WORKING_DIR}}'
     cmds:
       - hugo --cleanDestinationDir --gc --enableGitInfo --ignoreCache --minify
-      - scp -r public/* $HUGO_SCP_TARGET
+      - scp -r public/* $HUGP_SCP_USER"@"$HUGO_SCP_TARGET
+  
+  publish_rsync:
+    desc: pushes the site
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - hugo --cleanDestinationDir --gc --enableGitInfo --ignoreCache --minify
+      - rsync -a --delete public/ $HUGO_SCP_TARGET
