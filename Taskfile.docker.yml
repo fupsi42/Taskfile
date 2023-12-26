@@ -1,0 +1,30 @@
+version: 3
+tasks:
+  up:
+    desc: docker compose up -d
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker compose up -d
+    preconditions:
+      - test -f docker-compose.yml
+  logs:
+    desc: docker compose logs -f
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker compose logs -f
+    preconditions:
+      - test -f docker-compose.yml
+  stop:
+    desc: docker compose stop
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker compose stop
+    preconditions:
+      - test -f docker-compose.yml
+  start:
+    desc: docker compose start
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - docker compose start
+    preconditions:
+      - test -f docker-compose.yml

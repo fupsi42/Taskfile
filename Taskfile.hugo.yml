@@ -1,0 +1,14 @@
+version: '3'
+tasks:
+  up:
+    desc: spin up the hugo development server.
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - hugo server -D -E -F --cleanDestinationDir --gc --enableGitInfo --ignoreCache --minify --navigateToChanged --noHTTPCache --templateMetrics --disableFastRender --port 8080
+
+  publish:
+    desc: pushes the site
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - hugo --cleanDestinationDir --gc --enableGitInfo --ignoreCache --minify
+      - scp -r public/* $HUGO_SCP_TARGET

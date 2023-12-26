@@ -1,0 +1,81 @@
+version: '3'
+tasks:
+  update:
+    desc: nix update, debian update, ansible -> esx vm update
+    cmds:
+      - task: nixupdate
+      - task: debianupdate
+      - task: gentooupdate
+    internal: true
+  
+  ansible:
+    desc: Execute ansible playbook. 'task OS:ansible -- <ymlfile>'
+    ignore_error: true
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - cd ~/ansible_home; ansible-playbook -i inventory/ {{.CLI_ARGS}} --diff
+    
+  nixupdate:
+    desc: NIX OS Update
+    summary: |
+      Update der NIX OS komponenten.
+    internal: true
+    ignore_error: true
+    cmds:
+      - nix-channel --update
+      - nix-env -u
+      - nix-collect-garbage -d
+    preconditions:
+      - test -x $(which nix)
+
+  debianupdate:
+    desc: Debian OS Update
+    internal: true
+    ignore_error: true
+    cmds:
+      - sudo apt update
+      - sudo apt full-upgrade -y
+      - sudo apt autoremove -y
+      - sudo apt autoclean -y
+      - sudo apt clean
+    preconditions:
+      - test -x $(which apt)
+
+  gentooupdate:
+    desc: Gentoo OS Update
+    internal: true
+    ignore_error: true
+    cmds:
+      - emerge --sync
+      - emerge -uUDNv @world
+      - emerge depclean
+    preconditions:
+      - test -x $(which emerge)
+
+
+  gen-iso:
+    desc: Build data.iso from current ./data directory into ./data.iso
+    dir: '{{.USER_WORKING_DIR}}'
+    preconditions:
+      - test -d data
+    cmds:
+      - genisoimage -R -J -D -o data.iso data/*
+    generates:
+      - data.iso
+    sources:
+      - data/*
+    method: timestamp
+  
+  reboot:
+    desc: Neustart
+    summary: |
+      Neustart des Systems
+    cmds:
+      - reboot
+
+  shutdown:
+    desc: Herunterfahren
+    summary: |
+      Herunterfahren des Systems
+    cmds: 
+      - shutdown -h now

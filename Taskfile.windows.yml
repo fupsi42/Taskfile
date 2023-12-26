@@ -1,0 +1,70 @@
+version: '3'
+tasks:
+  update:
+    internal: true
+    cmds:
+      - task: clean
+      - task: wsl
+      - task: winget
+      - task: windowsupdate
+
+  reboot:
+    desc: Neustart
+    summary: |
+      Neustart der Windows Machine
+    cmds:
+      - shutdown /r /t 0
+
+  shutdown:
+    desc: Herunterfahren
+    summary: |
+      Herunterfahren der Windows Machine
+    cmds:
+      - shutdown /s /t 0
+
+  winget:
+    desc: winget upgrade -r -u
+    cmds:
+      - powershell.exe -ExecutionPolicy bypass -NonInteractive -Command "& { winget source update }"
+      - powershell.exe -ExecutionPolicy bypass -NonInteractive -Command "& { winget upgrade -r -u }"
+
+  wsl:
+    desc: wsl --update
+    cmds:
+      - wsl --update
+    internal: true
+
+  windowsupdate:
+    desc: dism clean && Update wsl / winget / windows
+    cmds:
+      - task: winget
+      - task: wsl
+      - task: clean
+      - powershell.exe -ExecutionPolicy bypass -NonInteractive -Command "& { get-windowsupdate -MicrosoftUpdate -Acceptall -install -verbose -ignorereboot }"
+    internal: true
+
+  ccleaner:
+    desc: ccleaner /auto
+    cmds:
+     - ccleaner.exe /auto
+    internal: true
+
+  vmware-osot:
+    desc: vmware-osot.exe -f 0 1 2 3 4 6 10
+    cmds:
+      - vmware-osot.exe -f 0 1 2 3 4 6 10
+    internal: true
+  
+  dism:
+    desc: dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+    cmds:
+      - dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+    ignore_error: true
+    internal: true
+
+  clean:
+    desc: dism / vmware-osot / ccleaner
+    cmds:
+      - task: dism
+      - task: vmware-osot
+      - task: ccleaner

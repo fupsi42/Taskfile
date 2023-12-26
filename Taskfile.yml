@@ -1,0 +1,28 @@
+version: '3'
+
+output: 'group'
+
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+includes:
+  OS: 
+    taskfile: ./Taskfile.{{OS}}.yml
+  hugo: 
+    taskfile: ./Taskfile.hugo.yml
+    optional: true
+  docker:
+    taskfile: ./Taskfile.docker.yml
+    optional: true
+
+tasks:
+  update:
+    desc: Updates the whole OS
+    cmds:
+      - task: OS:update
+      - task: post:update
+
+  post:update:
+    internal: true
+    silent: true
+    cmds:
+      - echo "Upgrade completed!"
