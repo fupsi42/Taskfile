@@ -2,7 +2,7 @@ version: '3'
 
 output: 'group'
 
-dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+dotenv: ['.taskfile.env', '.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
 
 includes:
   OS: 
